@@ -27,20 +27,20 @@ class AdminMusicController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required', 'string', 'max:255',
+            'title' => 'required', 'string', 'max:255',                   //aangeven wat er allemaal verplicht in de array moet
             'artist' => 'required', 'string', 'max:255',
             'lyrics' => File::types(['pdf', 'PDF']),
             'translation' => File::types(['pdf', 'PDF']),
             'sheet_music' => File::types(['pdf', 'PDF']),
             'full_song' => 'required', File::types(['mp3']),
-            'image' => 'required', File::types(['gif', 'GIF', 'jpeg', 'JPEG', 'jpg', 'JPG', 'png', 'PNG'])
+            'image' => 'required', File::types(['gif', 'GIF', 'jpeg', 'JPEG', 'jpg', 'JPG', 'png', 'PNG'])   //aangeven welke soorten bestanden toegestaan zijn
         ]);
 
         if(request()->file('lyrics') === null){
             $lyrics = null;
         } else {
-            $lyrics = request()->file('lyrics')->store('lyrics');
-        }
+            $lyrics = request()->file('lyrics')->store('lyrics');                      //if else voor indeling wat er allemaal mee gaat met het muzieknummer
+        }                                                                              //en wat allemaal ingevuld is
 
         if(request()->file('translation') === null){
             $translation = null;
@@ -57,7 +57,7 @@ class AdminMusicController extends Controller
         $full_song = request()->file('full_song')->store('full_songs');
         $image = request()->file('image')->store('images');
 
-        Song::create([
+        Song::create([                                                                          //liedje aanmaken, geeft aan wat er allemaal bij hoort
             'title' => $request['title'],
             'artist' => $request['artist'],
             'lyrics' => $lyrics,
@@ -72,7 +72,7 @@ class AdminMusicController extends Controller
         return redirect()->route('songs.index');
     }
 
-    public function getVoiceParts($id)
+    public function getVoiceParts($id)                                                                //optionele audio van gezang.
     {
         $voice_parts = DB::table('voice_parts')->where('song_id', '=', $id)->get();
         return $voice_parts;
@@ -83,7 +83,7 @@ class AdminMusicController extends Controller
         $song = Song::find($id);
         $voice_parts = $this->getVoiceParts($id);
 
-        return view('admin_songs.details', ['song' => $song], ['voice_parts' => $voice_parts]);
+        return view('admin_songs.details', ['song' => $song], ['voice_parts' => $voice_parts]);             //laden van lied
     }
 
     public function edit($id)
@@ -92,7 +92,7 @@ class AdminMusicController extends Controller
         return view('admin_songs.edit', compact('song'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id)                                               //valideren van liedje array
     {
         $request->validate([
             'title' => 'required', 'string', 'max:255',
@@ -116,10 +116,10 @@ class AdminMusicController extends Controller
 
         $song->visibility = $request->get('visibility');
 
-        if(request()->file('lyrics') === null){
-            if(request()->file('translation') === null){
-                if(request()->file('sheet_music') === null){
-                    if(request()->file('full_song') === null){
+        if(request()->file('lyrics') === null){                                            //verschillende versies van feedback bij het invullen van het formulier.
+            if(request()->file('translation') === null){                                   //met als input wat er allemaal meegekomen is van het formulier.
+                if(request()->file('sheet_music') === null){                               //en met meerdere controles worden alle combinaties van ingevuld en
+                    if(request()->file('full_song') === null){                             //niet ingevuld gecovered met de juiste format output naar de site.
                         if(request()->file('image') === null){
                             $song->save();
                             return redirect()->route('songs.index');
@@ -133,10 +133,10 @@ class AdminMusicController extends Controller
                     } else {
                         if(request()->file('image') === null){
                             $full_song = request()->file('full_song')->store('full_songs');
-                            $song->full_song = $full_song;
+                            $song->full_song = $full_song;  
 
-                            $song->save();
-                            return redirect()->route('songs.index');
+                            $song->save();                                                          
+                            return redirect()->route('songs.index');                                    
                         } else {
                             $full_song = request()->file('full_song')->store('full_songs');
                             $song->full_song = $full_song;
@@ -515,7 +515,7 @@ class AdminMusicController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($id)                                                                        //Song delete function
     {
         $song = Song::find($id);
         $song->delete();
