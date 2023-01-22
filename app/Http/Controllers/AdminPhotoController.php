@@ -10,7 +10,7 @@ class AdminPhotoController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $request->validate([                                                                                    //controle type gegevens van input
             'image' => 'required', File::types(['gif', 'GIF', 'jpeg', 'JPEG', 'jpg', 'JPG', 'png', 'PNG']),
             'title' => 'required', 'string', 'max:255'
         ]);
@@ -21,10 +21,10 @@ class AdminPhotoController extends Controller
             $image = request()->file('image')->store('photos');
         }
 
-        $photoAlbumId = $request['album_id'];
+        $photoAlbumId = $request['album_id'];                                                                     //detail functie voor photoalbum
 
         Photo::create([
-            'photo_album_id' => $photoAlbumId,
+            'photo_album_id' => $photoAlbumId,                                                                   //create functie
             'image' => $image,
             'title' => $request['title']
         ]);
@@ -32,7 +32,7 @@ class AdminPhotoController extends Controller
         return redirect()->route('photo_albums.show', $photoAlbumId);
     }
 
-    public function destroy($id)
+    public function destroy($id)                                                                                //delete functie
     {
         $photo = Photo::find($id);
         $photo->delete();
