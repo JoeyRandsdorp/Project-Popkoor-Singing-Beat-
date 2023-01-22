@@ -27,12 +27,12 @@ class PlaylistController extends Controller
         return view('playlists.playlists', ['playlists' => $playlists]);
     }
 
-    public function create()
+    public function create()                                                                    //stuurt naar create playlist formulier
     {
         return view('playlists.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request)                                                     //create playlist function
     {
         $request->validate([
             'title' => 'required', 'string', 'max:255'
@@ -48,7 +48,7 @@ class PlaylistController extends Controller
         return redirect()->route('playlists.index');
     }
 
-    public function show($id)
+    public function show($id)                                                               //playlist details function, show
     {
         $user_id = auth()->user()?->id;
 
@@ -66,9 +66,9 @@ class PlaylistController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($id)                                                                                       //hier wordt een specifieke playlist gevonden
     {
-        $user_id = auth()->user()?->id;
+        $user_id = auth()->user()?->id;                                                                             //met de user_id
 
         $playlist = Playlist::find($id);
 
@@ -80,7 +80,7 @@ class PlaylistController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id)                                                           //Hier wordt de edit gevalideerd.
     {
         $request->validate([
             'title' => 'required', 'string', 'max:255'
@@ -100,7 +100,7 @@ class PlaylistController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($id)                                                                        //playlist delete function
     {
         $user_id = auth()->user()?->id;
 
